@@ -1,0 +1,205 @@
+{
+  "datasets": [
+    {
+      "name": "ca5c8d1a",
+      "displayName": "marts_posts_users",
+      "queryLines": [
+        "SELECT * FROM stackexchange_dataset.default.marts_posts_users"
+      ]
+    },
+    {
+      "name": "c5e410d3",
+      "displayName": "marts_top_tags",
+      "queryLines": [
+        "SELECT * FROM stackexchange_dataset.default.marts_top_tags limit 10;"
+      ]
+    },
+    {
+      "name": "c0219c35",
+      "displayName": "views_per_month",
+      "queryLines": [
+        "SELECT\r\n",
+        "    TO_DATE(DATE_TRUNC('month', PostCreationDate)) AS Month,\r\n",
+        "    SUM(Views) AS TotalViews\r\n",
+        "FROM\r\n",
+        "    marts_posts_users\r\n",
+        "GROUP BY \r\n",
+        "    TO_DATE(DATE_TRUNC('month', PostCreationDate))\r\n",
+        "ORDER BY\r\n",
+        "    Month"
+      ],
+      "catalog": "stackexchange_dataset",
+      "schema": "default"
+    }
+  ],
+  "pages": [
+    {
+      "name": "b081f94c",
+      "displayName": "posts_users",
+      "layout": [
+        {
+          "widget": {
+            "name": "9024707f",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "ca5c8d1a",
+                  "fields": [
+                    {
+                      "name": "monthly(PostCreationDate)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `PostCreationDate`)"
+                    },
+                    {
+                      "name": "count(PostId)",
+                      "expression": "COUNT(`PostId`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(PostCreationDate)",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "count(PostId)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "28b63e13",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "c5e410d3",
+                  "fields": [
+                    {
+                      "name": "ExplodedTags",
+                      "expression": "`ExplodedTags`"
+                    },
+                    {
+                      "name": "sum(TagsCount)",
+                      "expression": "SUM(`TagsCount`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "ExplodedTags",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(TagsCount)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "8b8eafec",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "c0219c35",
+                  "fields": [
+                    {
+                      "name": "Month",
+                      "expression": "`Month`"
+                    },
+                    {
+                      "name": "TotalViews",
+                      "expression": "`TotalViews`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "scatter",
+              "encodings": {
+                "x": {
+                  "fieldName": "Month",
+                  "axis": {
+                    "hideLabels": true,
+                    "hideGrid": false
+                  },
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "TotalViews",
+                  "axis": {
+                    "hideLabels": true
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 12,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
